@@ -6,7 +6,17 @@ async function bootstrap() {
   
   // Enable strict CORS for the frontend origin
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (requestOrigin, callback) => {
+      if (!requestOrigin || 
+          requestOrigin.includes('localhost') || 
+          requestOrigin.includes('127.0.0.1') || 
+          requestOrigin.includes('vercel.app') || 
+          requestOrigin.includes('work.gd')) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
     methods: 'GET,POST,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
   });
