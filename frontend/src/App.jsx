@@ -396,6 +396,30 @@ function App() {
     const savedKey = localStorage.getItem('ioe_api_key') || '';
     setApiProvider(savedProvider);
     setApiKey(savedKey);
+
+    // Disable inspect tools (Right Click, F12, Ctrl+Shift+I/J/C, Ctrl+U)
+    const handleContextMenu = (e) => e.preventDefault();
+    const handleKeyDown = (e) => {
+      if (e.keyCode === 123) {
+        e.preventDefault();
+        return false;
+      }
+      if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+        e.preventDefault();
+        return false;
+      }
+      if (e.ctrlKey && e.keyCode === 85) {
+        e.preventDefault();
+        return false;
+      }
+    };
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   // Sync ambient sound contexts whenever choice or mute is flipped
